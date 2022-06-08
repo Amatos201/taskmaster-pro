@@ -33,7 +33,7 @@ var loadTasks = function() {
 
   // loop over object properties
   $.each(tasks, function(list, arr) {
-    console.log(list, arr);
+    
     // then loop over sub-array
     arr.forEach(function(task) {
       createTask(task.text, task.date, list);
@@ -80,8 +80,57 @@ $("#task-form-modal .btn-primary").click(function() {
 
     saveTasks();
   }
+});// get the textarea's current value/text
+$(".list-group").on("click", "p", function() {
+  var text = $(this)
+  .text()
+  .trim();
 });
+// due date was clicked
+$(".list-group").on("click", "span", function() {
+  // get current text
+  var date = $(this)
+    .text()
+    .trim();
 
+  // create new input element
+  var dateInput = $("<input>")
+    .attr("type", "text")
+    .addClass("form-control")
+    .val(date);
+
+  // swap out elements
+  $(this).replaceWith(dateInput);
+
+  // automatically focus on new element
+  dateInput.trigger("focus");
+// recreate p element
+var taskP = $("<p>")
+  .addClass("m-1")
+  .text(text);
+
+// replace textarea with p element
+$(this).replaceWith(taskP);
+// get the parent ul's id attribute
+var status = $(this)
+  .closest(".list-group")
+  .attr("id")
+  .replace("list-", "");
+
+// get the task's position in the list of other li elements
+var index = $(this)
+  .closest(".list-group-item")
+  .index();
+$(".list-group").on("blur", "textarea", function() {
+  tasks[status][index].text = text;
+  saveTasks();
+})
+var textInput = $("<textarea>")
+  .addClass("form-control")
+  .val(text);
+
+  $(this).replaceWith(textInput);
+  textInput.trigger("focus");
 // remove all tasks
 $("#remove-tasks").on("click", function() {
   for (var key in tasks) {
